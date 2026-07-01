@@ -125,17 +125,31 @@ function Dashboard() {
               style={{ width: `${Math.min(100, (water / stats.macros.water) * 100)}%` }}
             />
           </div>
-          <div className="mt-3 flex gap-1.5">
-            {[250, 500].map((n) => (
+          <div className="mt-3 grid grid-cols-4 gap-1">
+            {[250, 500, 1000, 2000].map((n) => (
               <button
                 key={n}
                 onClick={() => addWater(n)}
-                className="flex-1 glass rounded-full py-1.5 text-xs font-medium"
+                className="glass rounded-full py-1.5 text-[10px] font-semibold"
               >
-                +{n}
+                +{n >= 1000 ? `${n / 1000}L` : n}
               </button>
             ))}
-            <button onClick={() => addWater(-250)} className="glass rounded-full px-3 py-1.5 text-xs">-</button>
+          </div>
+          <div className="mt-2 flex gap-1.5">
+            <input
+              type="number"
+              min={1}
+              placeholder="Custom ml"
+              className="flex-1 rounded-full bg-input/60 border border-border px-3 py-1.5 text-xs outline-none focus:border-primary min-w-0"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  const v = parseInt((e.target as HTMLInputElement).value, 10);
+                  if (v > 0) { addWater(v); (e.target as HTMLInputElement).value = ""; }
+                }
+              }}
+            />
+            <button onClick={() => addWater(-250)} className="glass rounded-full px-3 py-1.5 text-xs shrink-0">-250</button>
           </div>
         </GlassCard>
 
