@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { getDailyLog, incrementWater, listRecentLogs, todayKey } from "@/lib/firestore";
 import type { DailyLog } from "@/lib/types";
