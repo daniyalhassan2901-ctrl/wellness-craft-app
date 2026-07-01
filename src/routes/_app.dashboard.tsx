@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { getDailyLog, listRecentLogs, setWater, todayKey } from "@/lib/firestore";
+import { getDailyLog, incrementWater, listRecentLogs, todayKey } from "@/lib/firestore";
 import type { DailyLog } from "@/lib/types";
 import { calcBMI, calcBMR, calcMacros, calcTDEE, calcTargets, bmiLabel } from "@/lib/calculations";
 import { GlassCard } from "@/components/glass-card";
@@ -18,13 +18,12 @@ function Dashboard() {
   const { user, profile } = useAuth();
   const [today, setToday] = useState<DailyLog | null>(null);
   const [week, setWeek] = useState<DailyLog[]>([]);
-  const [tick, setTick] = useState(0);
 
   useEffect(() => {
     if (!user) return;
     getDailyLog(user.uid, todayKey()).then(setToday);
     listRecentLogs(user.uid, 7).then(setWeek);
-  }, [user, tick]);
+  }, [user]);
 
   const stats = useMemo(() => {
     if (!profile) return null;
@@ -53,10 +52,21 @@ function Dashboard() {
   const water = today?.waterMl ?? 0;
   const goalDiff = profile.weightKg - profile.goalWeightKg;
 
-  const addWater = async (delta: number) => {
+  const addWater = (delta: number) => {
     if (!user) return;
-    await setWater(user.uid, todayKey(), Math.max(0, water + delta));
-    setTick((t) => t + 1);
+    // Optimistic functional update — safe for rapid taps, no re-fetch race
+    setToday((prev) => {
+      const base = prev ?? { date: todayKey(), foods: [], waterMl: 0 };
+      return { ...base, waterMl: Math.max(0, (base.waterMl ?? 0) + delta) };
+    });
+    // Atomic Firestore increment prevents lost updates
+    incrementWater(user.uid, todayKey(), delta).catch(() => {
+      // Roll back on failure
+      setToday((prev) => {
+        if (!prev) return prev;
+        return { ...prev, waterMl: Math.max(0, prev.waterMl - delta) };
+      });
+    });
   };
 
   const recs = generateRecommendations(consumed, stats.targets.calories, stats.macros, water);
