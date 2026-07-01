@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /food
+Disallow: /weight
+Disallow: /diary
+Disallow: /analytics
+Disallow: /profile
+Disallow: /onboarding
