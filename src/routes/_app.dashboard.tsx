@@ -52,20 +52,21 @@ function Dashboard() {
   const water = today?.waterMl ?? 0;
   const goalDiff = profile.weightKg - profile.goalWeightKg;
 
-  const pendingRef = useRef(false);
-  const addWater = async (delta: number) => {
-    if (!user || pendingRef.current) return;
-    // Optimistic update — prevents double-render/stack from re-fetch loops
+  const addWater = (delta: number) => {
+    if (!user) return;
+    // Optimistic functional update — safe for rapid taps, no re-fetch race
     setToday((prev) => {
       const base = prev ?? { date: todayKey(), foods: [], waterMl: 0 };
       return { ...base, waterMl: Math.max(0, (base.waterMl ?? 0) + delta) };
     });
-    pendingRef.current = true;
-    try {
-      await incrementWater(user.uid, todayKey(), delta);
-    } finally {
-      pendingRef.current = false;
-    }
+    // Atomic Firestore increment prevents lost updates
+    incrementWater(user.uid, todayKey(), delta).catch(() => {
+      // Roll back on failure
+      setToday((prev) => {
+        if (!prev) return prev;
+        return { ...prev, waterMl: Math.max(0, prev.waterMl - delta) };
+      });
+    });
   };
 
   const recs = generateRecommendations(consumed, stats.targets.calories, stats.macros, water);
