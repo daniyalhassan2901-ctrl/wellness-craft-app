@@ -11,6 +11,7 @@ import {
   addDoc,
   deleteDoc,
   serverTimestamp,
+  increment,
 } from "firebase/firestore";
 import { getFirebase } from "./firebase";
 import type { DailyLog, DiaryEntry, LoggedFood, UserProfile, WeightEntry } from "./types";
