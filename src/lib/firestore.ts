@@ -71,6 +71,22 @@ export async function setWater(uid: string, date: string, waterMl: number) {
   await upsertDailyLog(uid, log);
 }
 
+export async function incrementWater(uid: string, date: string, deltaMl: number) {
+  const { db } = getFirebase();
+  if (!db) throw new Error("DB not ready");
+  const ref = doc(db, "users", uid, "dailyLogs", date);
+  const snap = await getDoc(ref);
+  if (!snap.exists()) {
+    await setDoc(ref, { date, foods: [], waterMl: Math.max(0, deltaMl) });
+    return;
+  }
+  // Atomic increment prevents lost updates from rapid taps
+  await updateDoc(ref, { waterMl: increment(deltaMl) });
+  // Clamp negatives if we went below 0
+  const after = (snap.data().waterMl ?? 0) + deltaMl;
+  if (after < 0) await updateDoc(ref, { waterMl: 0 });
+}
+
 export async function listWeights(uid: string): Promise<WeightEntry[]> {
   const { db } = getFirebase();
   if (!db) return [];
