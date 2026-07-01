@@ -18,13 +18,12 @@ function Dashboard() {
   const { user, profile } = useAuth();
   const [today, setToday] = useState<DailyLog | null>(null);
   const [week, setWeek] = useState<DailyLog[]>([]);
-  const [tick, setTick] = useState(0);
 
   useEffect(() => {
     if (!user) return;
     getDailyLog(user.uid, todayKey()).then(setToday);
     listRecentLogs(user.uid, 7).then(setWeek);
-  }, [user, tick]);
+  }, [user]);
 
   const stats = useMemo(() => {
     if (!profile) return null;
