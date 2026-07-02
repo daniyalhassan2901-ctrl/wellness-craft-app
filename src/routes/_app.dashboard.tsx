@@ -30,7 +30,10 @@ function Dashboard() {
     if (!profile) return null;
     const bmr = calcBMR(profile.weightKg, profile.heightCm, profile.age, profile.gender);
     const tdee = calcTDEE(bmr, profile.activityLevel);
-    const targets = calcTargets(tdee, profile.fitnessGoal);
+    const autoTargets = calcTargets(tdee, profile.fitnessGoal);
+    const targets = profile.dailyCalorieTarget && profile.dailyCalorieTarget > 0
+      ? { ...autoTargets, calories: profile.dailyCalorieTarget }
+      : autoTargets;
     const macros = calcMacros(targets.calories, profile.weightKg, profile.fitnessGoal);
     const bmi = calcBMI(profile.weightKg, profile.heightCm);
     return { bmr, tdee, targets, macros, bmi };
@@ -125,16 +128,16 @@ function Dashboard() {
               style={{ width: `${Math.min(100, (water / stats.macros.water) * 100)}%` }}
             />
           </div>
-          <div className="mt-3 grid grid-cols-4 gap-2">
-            {[250, 500, 1000, 2000].map((n) => (
+          <div className="mt-3 grid grid-cols-4 gap-1.5">
+            {[250, 500, 750, 1000].map((n) => (
               <button
                 key={n}
                 type="button"
                 onClick={() => addWater(n)}
-                aria-label={`Add ${n}ml water`}
-                className="glass rounded-xl py-2.5 px-1 text-xs font-semibold leading-none min-h-[44px] flex items-center justify-center active:scale-95 transition-transform touch-manipulation"
+                aria-label={`Add ${n} millilitres water`}
+                className="glass rounded-xl py-2.5 px-0 text-[11px] font-semibold leading-none min-h-[44px] w-full flex items-center justify-center active:scale-95 transition-transform touch-manipulation overflow-hidden whitespace-nowrap"
               >
-                {n >= 1000 ? `${n / 1000}L` : `${n}ml`}
+                {n >= 1000 ? `${n / 1000} L` : `${n} ml`}
               </button>
             ))}
           </div>
