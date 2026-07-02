@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { getDailyLog, listRecentLogs, setWater, todayKey } from "@/lib/firestore";
+import { getDailyLog, incrementWater, listRecentLogs, todayKey } from "@/lib/firestore";
 import type { DailyLog } from "@/lib/types";
 import { calcBMI, calcBMR, calcMacros, calcTDEE, calcTargets, bmiLabel } from "@/lib/calculations";
 import { GlassCard } from "@/components/glass-card";
@@ -18,13 +18,12 @@ function Dashboard() {
   const { user, profile } = useAuth();
   const [today, setToday] = useState<DailyLog | null>(null);
   const [week, setWeek] = useState<DailyLog[]>([]);
-  const [tick, setTick] = useState(0);
 
   useEffect(() => {
     if (!user) return;
     getDailyLog(user.uid, todayKey()).then(setToday);
     listRecentLogs(user.uid, 7).then(setWeek);
-  }, [user, tick]);
+  }, [user]);
 
   const stats = useMemo(() => {
     if (!profile) return null;
