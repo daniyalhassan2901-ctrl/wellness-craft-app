@@ -56,13 +56,21 @@ function Dashboard() {
   const water = today?.waterMl ?? 0;
   const goalDiff = profile.weightKg - profile.goalWeightKg;
 
-  const addWater = async (delta: number) => {
+  const addWater = useCallback(async (delta: number) => {
     if (!user) return;
-    await setWater(user.uid, todayKey(), Math.max(0, water + delta));
-    setTick((t) => t + 1);
-  };
+    const next = Math.max(0, (today?.waterMl ?? 0) + delta);
+    setToday((prev) => (prev ? { ...prev, waterMl: next } : prev));
+    try {
+      await setWater(user.uid, todayKey(), next);
+    } catch {
+      setTick((t) => t + 1);
+    }
+  }, [user, today?.waterMl]);
 
-  const recs = generateRecommendations(consumed, stats.targets.calories, stats.macros, water);
+  const recs = useMemo(
+    () => generateRecommendations(consumed, stats.targets.calories, stats.macros, water),
+    [consumed, stats.targets.calories, stats.macros, water],
+  );
 
   return (
     <div className="px-4 pt-6 space-y-4">
