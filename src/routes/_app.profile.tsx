@@ -117,6 +117,39 @@ function ProfilePage() {
       </GlassCard>
 
       <GlassCard>
+        <div className="flex items-center justify-between mb-1">
+          <div className="text-sm font-semibold">Daily calorie target</div>
+          <span className="text-[10px] text-muted-foreground">
+            Auto: {t.calories} kcal
+          </span>
+        </div>
+        <p className="text-xs text-muted-foreground mb-3">
+          Set a custom daily calorie goal, or leave blank to use the automatic calculation.
+        </p>
+        <div className="flex gap-2">
+          <input
+            type="number"
+            inputMode="numeric"
+            min={0}
+            placeholder={`e.g. ${t.calories}`}
+            value={customCal}
+            onChange={(e) => setCustomCal(e.target.value)}
+            className="flex-1 rounded-2xl bg-input/60 border border-border px-4 py-2.5 text-sm outline-none focus:border-primary"
+          />
+          <button
+            type="button"
+            onClick={() => setCustomCal("")}
+            className="glass rounded-2xl px-4 text-xs font-medium shrink-0"
+          >
+            Reset
+          </button>
+        </div>
+        <div className="mt-2 text-xs text-muted-foreground">
+          Currently using: <span className="font-semibold text-foreground">{effectiveCalories} kcal/day</span>
+          {customCalNum > 0 ? " (custom)" : " (auto)"}
+        </div>
+
+      <GlassCard>
         <div className="text-sm font-semibold mb-3">Activity level</div>
         <div className="grid grid-cols-2 gap-2">
           {(["sedentary", "light", "moderate", "active", "athlete"] as ActivityLevel[]).map((a) => (
