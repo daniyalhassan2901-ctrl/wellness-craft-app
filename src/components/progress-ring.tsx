@@ -63,5 +63,5 @@ export const ProgressRing = memo(function ProgressRing({
       )}
     </div>
   );
-}
+});
 
