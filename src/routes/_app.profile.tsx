@@ -46,7 +46,9 @@ function ProfilePage() {
   const bmr = calcBMR(weightKg, heightCm, age, profile.gender);
   const tdee = calcTDEE(bmr, activity);
   const t = calcTargets(tdee, goal);
-  const m = calcMacros(t.calories, weightKg, goal);
+  const customCalNum = parseInt(customCal, 10);
+  const effectiveCalories = customCalNum && customCalNum > 0 ? customCalNum : t.calories;
+  const m = calcMacros(effectiveCalories, weightKg, goal);
   const bmi = calcBMI(weightKg, heightCm);
 
   const save = async () => {
@@ -54,6 +56,7 @@ function ProfilePage() {
     await saveProfile(user.uid, {
       fullName, age, heightCm, weightKg, goalWeightKg,
       activityLevel: activity, fitnessGoal: goal,
+      dailyCalorieTarget: customCalNum && customCalNum > 0 ? customCalNum : 0,
     });
     await refreshProfile();
     setBusy(false);
