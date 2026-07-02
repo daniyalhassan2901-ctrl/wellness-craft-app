@@ -25,6 +25,9 @@ function ProfilePage() {
   const [goalWeightKg, setGoalWeightKg] = useState(profile?.goalWeightKg ?? 65);
   const [activity, setActivity] = useState<ActivityLevel>(profile?.activityLevel ?? "moderate");
   const [goal, setGoal] = useState<FitnessGoal>(profile?.fitnessGoal ?? "loss");
+  const [customCal, setCustomCal] = useState<string>(
+    profile?.dailyCalorieTarget ? String(profile.dailyCalorieTarget) : "",
+  );
 
   useEffect(() => {
     if (!profile) return;
@@ -35,6 +38,7 @@ function ProfilePage() {
     setGoalWeightKg(profile.goalWeightKg);
     setActivity(profile.activityLevel);
     setGoal(profile.fitnessGoal);
+    setCustomCal(profile.dailyCalorieTarget ? String(profile.dailyCalorieTarget) : "");
   }, [profile]);
 
   if (!profile || !user) return null;
