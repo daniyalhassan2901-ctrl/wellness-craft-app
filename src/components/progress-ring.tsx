@@ -28,7 +28,7 @@ export function ProgressRing({
 
   return (
     <div className={cn("relative inline-flex items-center justify-center", className)} style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="-rotate-90">
+      <svg width={size} height={size} className="-rotate-90 drop-shadow-sm">
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -36,7 +36,7 @@ export function ProgressRing({
           stroke="var(--color-muted)"
           strokeWidth={stroke}
           fill="none"
-          opacity={0.3}
+          className="opacity-60 dark:opacity-40"
         />
         <circle
           cx={size / 2}
@@ -48,15 +48,19 @@ export function ProgressRing({
           fill="none"
           strokeDasharray={circ}
           strokeDashoffset={offset}
-          style={{ transition: "stroke-dashoffset 600ms ease" }}
+          style={{
+            transition: "stroke-dashoffset 600ms ease",
+            filter: "drop-shadow(0 0 5px color-mix(in oklab, var(--color-primary) 35%, transparent))",
+          }}
         />
       </svg>
       {(label || sublabel) && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          {label && <div className="text-2xl font-bold tracking-tight">{label}</div>}
-          {sublabel && <div className="text-xs text-muted-foreground">{sublabel}</div>}
+        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+          {label && <div className="text-2xl font-bold tracking-tight text-foreground drop-shadow-sm">{label}</div>}
+          {sublabel && <div className="text-xs font-medium text-muted-foreground">{sublabel}</div>}
         </div>
       )}
     </div>
   );
 }
+
