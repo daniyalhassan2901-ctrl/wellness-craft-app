@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -11,7 +12,7 @@ interface Props {
   sublabel?: string;
 }
 
-export function ProgressRing({
+export const ProgressRing = memo(function ProgressRing({
   value,
   max,
   size = 120,
@@ -62,5 +63,5 @@ export function ProgressRing({
       )}
     </div>
   );
-}
+});
 

@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { getDailyLog, listRecentLogs, setWater, todayKey } from "@/lib/firestore";
 import type { DailyLog } from "@/lib/types";
@@ -56,13 +56,21 @@ function Dashboard() {
   const water = today?.waterMl ?? 0;
   const goalDiff = profile.weightKg - profile.goalWeightKg;
 
-  const addWater = async (delta: number) => {
+  const addWater = useCallback(async (delta: number) => {
     if (!user) return;
-    await setWater(user.uid, todayKey(), Math.max(0, water + delta));
-    setTick((t) => t + 1);
-  };
+    const next = Math.max(0, (today?.waterMl ?? 0) + delta);
+    setToday((prev) => (prev ? { ...prev, waterMl: next } : prev));
+    try {
+      await setWater(user.uid, todayKey(), next);
+    } catch {
+      setTick((t) => t + 1);
+    }
+  }, [user, today?.waterMl]);
 
-  const recs = generateRecommendations(consumed, stats.targets.calories, stats.macros, water);
+  const recs = useMemo(
+    () => generateRecommendations(consumed, stats.targets.calories, stats.macros, water),
+    [consumed, stats.targets.calories, stats.macros, water],
+  );
 
   return (
     <div className="px-4 pt-6 space-y-4">
@@ -236,16 +244,16 @@ function Dashboard() {
   );
 }
 
-function MiniStat({ label, value, sub }: { label: string; value: string; sub: string }) {
+const MiniStat = memo(function MiniStat({ label, value, sub }: { label: string; value: string; sub: string }) {
   return (
     <div>
       <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{label}</div>
       <div className="text-base font-bold">{value}<span className="text-[10px] font-normal text-muted-foreground ml-0.5">{sub}</span></div>
     </div>
   );
-}
+});
 
-function MacroBar({ label, value, max, color }: { label: string; value: number; max: number; color: string }) {
+const MacroBar = memo(function MacroBar({ label, value, max, color }: { label: string; value: number; max: number; color: string }) {
   const pct = Math.min(100, (value / Math.max(1, max)) * 100);
   return (
     <div className="text-center">
@@ -256,7 +264,7 @@ function MacroBar({ label, value, max, color }: { label: string; value: number; 
       </div>
     </div>
   );
-}
+});
 
 function calcStreak(logs: DailyLog[]): number {
   let s = 0;
