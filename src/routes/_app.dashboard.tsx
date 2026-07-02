@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { getDailyLog, incrementWater, listRecentLogs, todayKey } from "@/lib/firestore";
 import type { DailyLog } from "@/lib/types";
@@ -29,7 +29,10 @@ function Dashboard() {
     if (!profile) return null;
     const bmr = calcBMR(profile.weightKg, profile.heightCm, profile.age, profile.gender);
     const tdee = calcTDEE(bmr, profile.activityLevel);
-    const targets = calcTargets(tdee, profile.fitnessGoal);
+    const autoTargets = calcTargets(tdee, profile.fitnessGoal);
+    const targets = profile.dailyCalorieTarget && profile.dailyCalorieTarget > 0
+      ? { ...autoTargets, calories: profile.dailyCalorieTarget }
+      : autoTargets;
     const macros = calcMacros(targets.calories, profile.weightKg, profile.fitnessGoal);
     const bmi = calcBMI(profile.weightKg, profile.heightCm);
     return { bmr, tdee, targets, macros, bmi };
@@ -52,24 +55,21 @@ function Dashboard() {
   const water = today?.waterMl ?? 0;
   const goalDiff = profile.weightKg - profile.goalWeightKg;
 
-  const addWater = (delta: number) => {
+  const addWater = useCallback(async (delta: number) => {
     if (!user) return;
-    // Optimistic functional update — safe for rapid taps, no re-fetch race
-    setToday((prev) => {
-      const base = prev ?? { date: todayKey(), foods: [], waterMl: 0 };
-      return { ...base, waterMl: Math.max(0, (base.waterMl ?? 0) + delta) };
-    });
-    // Atomic Firestore increment prevents lost updates
-    incrementWater(user.uid, todayKey(), delta).catch(() => {
-      // Roll back on failure
-      setToday((prev) => {
-        if (!prev) return prev;
-        return { ...prev, waterMl: Math.max(0, prev.waterMl - delta) };
-      });
-    });
-  };
+    const next = Math.max(0, (today?.waterMl ?? 0) + delta);
+    setToday((prev) => (prev ? { ...prev, waterMl: next } : prev));
+    try {
+      await setWater(user.uid, todayKey(), next);
+    } catch {
+      setTick((t) => t + 1);
+    }
+  }, [user, today?.waterMl]);
 
-  const recs = generateRecommendations(consumed, stats.targets.calories, stats.macros, water);
+  const recs = useMemo(
+    () => generateRecommendations(consumed, stats.targets.calories, stats.macros, water),
+    [consumed, stats.targets.calories, stats.macros, water],
+  );
 
   return (
     <div className="px-4 pt-6 space-y-4">
@@ -135,14 +135,16 @@ function Dashboard() {
               style={{ width: `${Math.min(100, (water / stats.macros.water) * 100)}%` }}
             />
           </div>
-          <div className="mt-3 grid grid-cols-4 gap-1">
-            {[250, 500, 1000, 2000].map((n) => (
+          <div className="mt-3 grid grid-cols-4 gap-1.5">
+            {[250, 500, 750, 1000].map((n) => (
               <button
                 key={n}
+                type="button"
                 onClick={() => addWater(n)}
-                className="glass rounded-full py-1.5 text-[10px] font-semibold"
+                aria-label={`Add ${n} millilitres water`}
+                className="glass rounded-xl py-2.5 px-0 text-[11px] font-semibold leading-none min-h-[44px] w-full flex items-center justify-center active:scale-95 transition-transform touch-manipulation overflow-hidden whitespace-nowrap"
               >
-                +{n >= 1000 ? `${n / 1000}L` : n}
+                {n >= 1000 ? `${n / 1000} L` : `${n} ml`}
               </button>
             ))}
           </div>
@@ -241,16 +243,16 @@ function Dashboard() {
   );
 }
 
-function MiniStat({ label, value, sub }: { label: string; value: string; sub: string }) {
+const MiniStat = memo(function MiniStat({ label, value, sub }: { label: string; value: string; sub: string }) {
   return (
     <div>
       <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{label}</div>
       <div className="text-base font-bold">{value}<span className="text-[10px] font-normal text-muted-foreground ml-0.5">{sub}</span></div>
     </div>
   );
-}
+});
 
-function MacroBar({ label, value, max, color }: { label: string; value: number; max: number; color: string }) {
+const MacroBar = memo(function MacroBar({ label, value, max, color }: { label: string; value: number; max: number; color: string }) {
   const pct = Math.min(100, (value / Math.max(1, max)) * 100);
   return (
     <div className="text-center">
@@ -261,7 +263,7 @@ function MacroBar({ label, value, max, color }: { label: string; value: number; 
       </div>
     </div>
   );
-}
+});
 
 function calcStreak(logs: DailyLog[]): number {
   let s = 0;

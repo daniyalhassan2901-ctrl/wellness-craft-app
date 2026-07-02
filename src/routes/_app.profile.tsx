@@ -25,6 +25,9 @@ function ProfilePage() {
   const [goalWeightKg, setGoalWeightKg] = useState(profile?.goalWeightKg ?? 65);
   const [activity, setActivity] = useState<ActivityLevel>(profile?.activityLevel ?? "moderate");
   const [goal, setGoal] = useState<FitnessGoal>(profile?.fitnessGoal ?? "loss");
+  const [customCal, setCustomCal] = useState<string>(
+    profile?.dailyCalorieTarget ? String(profile.dailyCalorieTarget) : "",
+  );
 
   useEffect(() => {
     if (!profile) return;
@@ -35,6 +38,7 @@ function ProfilePage() {
     setGoalWeightKg(profile.goalWeightKg);
     setActivity(profile.activityLevel);
     setGoal(profile.fitnessGoal);
+    setCustomCal(profile.dailyCalorieTarget ? String(profile.dailyCalorieTarget) : "");
   }, [profile]);
 
   if (!profile || !user) return null;
@@ -42,7 +46,9 @@ function ProfilePage() {
   const bmr = calcBMR(weightKg, heightCm, age, profile.gender);
   const tdee = calcTDEE(bmr, activity);
   const t = calcTargets(tdee, goal);
-  const m = calcMacros(t.calories, weightKg, goal);
+  const customCalNum = parseInt(customCal, 10);
+  const effectiveCalories = customCalNum && customCalNum > 0 ? customCalNum : t.calories;
+  const m = calcMacros(effectiveCalories, weightKg, goal);
   const bmi = calcBMI(weightKg, heightCm);
 
   const save = async () => {
@@ -50,6 +56,7 @@ function ProfilePage() {
     await saveProfile(user.uid, {
       fullName, age, heightCm, weightKg, goalWeightKg,
       activityLevel: activity, fitnessGoal: goal,
+      dailyCalorieTarget: customCalNum && customCalNum > 0 ? customCalNum : 0,
     });
     await refreshProfile();
     setBusy(false);
@@ -72,7 +79,7 @@ function ProfilePage() {
       <GlassCard>
         <div className="text-sm font-semibold mb-3">Your targets</div>
         <div className="grid grid-cols-4 gap-2 text-center">
-          <Stat label="kcal" value={t.calories} />
+          <Stat label="kcal" value={effectiveCalories} />
           <Stat label="P" value={m.protein} suffix="g" />
           <Stat label="C" value={m.carbs} suffix="g" />
           <Stat label="F" value={m.fat} suffix="g" />
@@ -86,13 +93,13 @@ function ProfilePage() {
           <div className="glass rounded-xl p-2 text-center">
             <div className="text-muted-foreground">Weekly progress</div>
             <div className="font-semibold">
-              {(((t.calories - tdee) * 7) / 7700).toFixed(2)} kg/wk
+              {(((effectiveCalories - tdee) * 7) / 7700).toFixed(2)} kg/wk
             </div>
           </div>
           <div className="glass rounded-xl p-2 text-center">
             <div className="text-muted-foreground">Monthly</div>
             <div className="font-semibold">
-              {(((t.calories - tdee) * 30) / 7700).toFixed(1)} kg/mo
+              {(((effectiveCalories - tdee) * 30) / 7700).toFixed(1)} kg/mo
             </div>
           </div>
         </div>
@@ -108,6 +115,42 @@ function ProfilePage() {
           <Field label="Goal weight (kg)" value={goalWeightKg} onChange={(v) => setGoalWeightKg(+v)} type="number" step={0.1} />
         </div>
       </GlassCard>
+
+      <GlassCard>
+        <div className="flex items-center justify-between mb-1">
+          <div className="text-sm font-semibold">Daily calorie target</div>
+          <span className="text-[10px] text-muted-foreground">
+            Auto: {t.calories} kcal
+          </span>
+        </div>
+        <p className="text-xs text-muted-foreground mb-3">
+          Set a custom daily calorie goal, or leave blank to use the automatic calculation.
+        </p>
+        <div className="flex gap-2">
+          <input
+            type="number"
+            inputMode="numeric"
+            min={0}
+            placeholder={`e.g. ${t.calories}`}
+            value={customCal}
+            onChange={(e) => setCustomCal(e.target.value)}
+            className="flex-1 rounded-2xl bg-input/60 border border-border px-4 py-2.5 text-sm outline-none focus:border-primary"
+          />
+          <button
+            type="button"
+            onClick={() => setCustomCal("")}
+            className="glass rounded-2xl px-4 text-xs font-medium shrink-0"
+          >
+            Reset
+          </button>
+        </div>
+        <div className="mt-2 text-xs text-muted-foreground">
+          Currently using: <span className="font-semibold text-foreground">{effectiveCalories} kcal/day</span>
+          {customCalNum > 0 ? " (custom)" : " (auto)"}
+        </div>
+      </GlassCard>
+
+
 
       <GlassCard>
         <div className="text-sm font-semibold mb-3">Activity level</div>
