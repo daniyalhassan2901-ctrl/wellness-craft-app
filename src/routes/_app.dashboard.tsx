@@ -125,14 +125,16 @@ function Dashboard() {
               style={{ width: `${Math.min(100, (water / stats.macros.water) * 100)}%` }}
             />
           </div>
-          <div className="mt-3 grid grid-cols-4 gap-1">
+          <div className="mt-3 grid grid-cols-4 gap-2">
             {[250, 500, 1000, 2000].map((n) => (
               <button
                 key={n}
+                type="button"
                 onClick={() => addWater(n)}
-                className="glass rounded-full py-1.5 text-[10px] font-semibold"
+                aria-label={`Add ${n}ml water`}
+                className="glass rounded-xl py-2.5 px-1 text-xs font-semibold leading-none min-h-[44px] flex items-center justify-center active:scale-95 transition-transform touch-manipulation"
               >
-                +{n >= 1000 ? `${n / 1000}L` : n}
+                {n >= 1000 ? `${n / 1000}L` : `${n}ml`}
               </button>
             ))}
           </div>
