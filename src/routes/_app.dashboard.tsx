@@ -244,16 +244,16 @@ function Dashboard() {
   );
 }
 
-function MiniStat({ label, value, sub }: { label: string; value: string; sub: string }) {
+const MiniStat = memo(function MiniStat({ label, value, sub }: { label: string; value: string; sub: string }) {
   return (
     <div>
       <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{label}</div>
       <div className="text-base font-bold">{value}<span className="text-[10px] font-normal text-muted-foreground ml-0.5">{sub}</span></div>
     </div>
   );
-}
+});
 
-function MacroBar({ label, value, max, color }: { label: string; value: number; max: number; color: string }) {
+const MacroBar = memo(function MacroBar({ label, value, max, color }: { label: string; value: number; max: number; color: string }) {
   const pct = Math.min(100, (value / Math.max(1, max)) * 100);
   return (
     <div className="text-center">
@@ -264,7 +264,7 @@ function MacroBar({ label, value, max, color }: { label: string; value: number; 
       </div>
     </div>
   );
-}
+});
 
 function calcStreak(logs: DailyLog[]): number {
   let s = 0;
