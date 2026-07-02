@@ -15,6 +15,7 @@ export interface UserProfile {
   createdAt: number;
   streak?: number;
   lastLogDate?: string;
+  dailyCalorieTarget?: number;
 }
 
 export interface FoodItem {
