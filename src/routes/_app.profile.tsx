@@ -148,6 +148,9 @@ function ProfilePage() {
           Currently using: <span className="font-semibold text-foreground">{effectiveCalories} kcal/day</span>
           {customCalNum > 0 ? " (custom)" : " (auto)"}
         </div>
+      </GlassCard>
+
+
 
       <GlassCard>
         <div className="text-sm font-semibold mb-3">Activity level</div>
