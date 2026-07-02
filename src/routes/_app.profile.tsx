@@ -79,7 +79,7 @@ function ProfilePage() {
       <GlassCard>
         <div className="text-sm font-semibold mb-3">Your targets</div>
         <div className="grid grid-cols-4 gap-2 text-center">
-          <Stat label="kcal" value={t.calories} />
+          <Stat label="kcal" value={effectiveCalories} />
           <Stat label="P" value={m.protein} suffix="g" />
           <Stat label="C" value={m.carbs} suffix="g" />
           <Stat label="F" value={m.fat} suffix="g" />
@@ -93,13 +93,13 @@ function ProfilePage() {
           <div className="glass rounded-xl p-2 text-center">
             <div className="text-muted-foreground">Weekly progress</div>
             <div className="font-semibold">
-              {(((t.calories - tdee) * 7) / 7700).toFixed(2)} kg/wk
+              {(((effectiveCalories - tdee) * 7) / 7700).toFixed(2)} kg/wk
             </div>
           </div>
           <div className="glass rounded-xl p-2 text-center">
             <div className="text-muted-foreground">Monthly</div>
             <div className="font-semibold">
-              {(((t.calories - tdee) * 30) / 7700).toFixed(1)} kg/mo
+              {(((effectiveCalories - tdee) * 30) / 7700).toFixed(1)} kg/mo
             </div>
           </div>
         </div>
