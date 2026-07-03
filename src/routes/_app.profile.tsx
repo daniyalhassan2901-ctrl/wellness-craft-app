@@ -197,6 +197,8 @@ function ProfilePage() {
         <Save className="h-4 w-4" /> {saved ? "Saved!" : "Save changes"}
       </button>
 
+      <ChatSupport />
+
       <button
         onClick={logout}
         className="w-full glass rounded-full py-3 text-sm font-medium flex items-center justify-center gap-2 text-destructive"
