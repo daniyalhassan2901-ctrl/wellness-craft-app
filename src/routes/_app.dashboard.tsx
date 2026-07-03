@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { getDailyLog, incrementWater, listRecentLogs, todayKey } from "@/lib/firestore";
+import { getDailyLog, listRecentLogs, setWater, todayKey } from "@/lib/firestore";
 import type { DailyLog } from "@/lib/types";
 import { calcBMI, calcBMR, calcMacros, calcTDEE, calcTargets, bmiLabel } from "@/lib/calculations";
 import { GlassCard } from "@/components/glass-card";
