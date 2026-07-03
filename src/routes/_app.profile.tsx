@@ -5,6 +5,7 @@ import { saveProfile } from "@/lib/firestore";
 import { calcBMR, calcMacros, calcTDEE, calcTargets, calcBMI, bmiLabel } from "@/lib/calculations";
 import type { ActivityLevel, FitnessGoal } from "@/lib/calculations";
 import { GlassCard } from "@/components/glass-card";
+import { ChatSupport } from "@/components/chat-support";
 import { LogOut, Save } from "lucide-react";
 
 export const Route = createFileRoute("/_app/profile")({
@@ -195,6 +196,8 @@ function ProfilePage() {
       >
         <Save className="h-4 w-4" /> {saved ? "Saved!" : "Save changes"}
       </button>
+
+      <ChatSupport />
 
       <button
         onClick={logout}
