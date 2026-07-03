@@ -62,7 +62,8 @@ function Dashboard() {
     try {
       await setWater(user.uid, todayKey(), next);
     } catch {
-      setTick((t) => t + 1);
+      // revert on error
+      setToday((prev) => (prev ? { ...prev, waterMl: today?.waterMl ?? 0 } : prev));
     }
   }, [user, today?.waterMl]);
 
