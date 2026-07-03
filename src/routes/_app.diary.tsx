@@ -95,13 +95,20 @@ function DiaryPage() {
       {open && (
         <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-md flex items-end sm:items-center justify-center">
           <div className="w-full max-w-md sm:rounded-3xl bg-card border border-border shadow-card rounded-t-3xl flex flex-col max-h-[92vh]">
-            <div className="flex items-center justify-between p-5 pb-3 shrink-0">
-              <div className="font-semibold">New entry</div>
-              <button onClick={() => setOpen(false)} className="glass rounded-full p-2">
+            <div className="flex items-center justify-between gap-2 p-5 pb-3 shrink-0 border-b border-border/50">
+              <button onClick={() => setOpen(false)} className="glass rounded-full p-2" aria-label="Close">
                 <X className="h-4 w-4" />
               </button>
+              <div className="font-semibold">New entry</div>
+              <button
+                onClick={save}
+                disabled={!title.trim()}
+                className="rounded-full gradient-hero text-primary-foreground px-4 py-2 text-xs font-semibold shadow-glow disabled:opacity-50"
+              >
+                Save
+              </button>
             </div>
-            <div className="flex-1 overflow-y-auto px-5 space-y-3 pb-3">
+            <div className="flex-1 overflow-y-auto px-5 py-3 space-y-3" style={{ paddingBottom: "calc(1rem + env(safe-area-inset-bottom))" }}>
               <input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -129,11 +136,6 @@ function DiaryPage() {
                   ))}
                 </div>
               </div>
-            </div>
-            <div className="p-5 pt-3 border-t border-border/50 shrink-0" style={{ paddingBottom: "calc(1.25rem + env(safe-area-inset-bottom))" }}>
-              <button onClick={save} disabled={!title.trim()} className="w-full rounded-full gradient-hero text-primary-foreground py-3 text-sm font-semibold shadow-glow disabled:opacity-50">
-                Save entry
-              </button>
             </div>
           </div>
         </div>

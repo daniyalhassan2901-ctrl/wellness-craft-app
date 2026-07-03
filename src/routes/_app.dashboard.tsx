@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { getDailyLog, incrementWater, listRecentLogs, todayKey } from "@/lib/firestore";
+import { getDailyLog, listRecentLogs, setWater, todayKey } from "@/lib/firestore";
 import type { DailyLog } from "@/lib/types";
 import { calcBMI, calcBMR, calcMacros, calcTDEE, calcTargets, bmiLabel } from "@/lib/calculations";
 import { GlassCard } from "@/components/glass-card";
@@ -62,7 +62,8 @@ function Dashboard() {
     try {
       await setWater(user.uid, todayKey(), next);
     } catch {
-      setTick((t) => t + 1);
+      // revert on error
+      setToday((prev) => (prev ? { ...prev, waterMl: today?.waterMl ?? 0 } : prev));
     }
   }, [user, today?.waterMl]);
 
@@ -135,14 +136,14 @@ function Dashboard() {
               style={{ width: `${Math.min(100, (water / stats.macros.water) * 100)}%` }}
             />
           </div>
-          <div className="mt-3 grid grid-cols-4 gap-1.5">
+          <div className="mt-3 grid grid-cols-2 gap-1.5">
             {[250, 500, 750, 1000].map((n) => (
               <button
                 key={n}
                 type="button"
                 onClick={() => addWater(n)}
                 aria-label={`Add ${n} millilitres water`}
-                className="glass rounded-xl py-2.5 px-0 text-[11px] font-semibold leading-none min-h-[44px] w-full flex items-center justify-center active:scale-95 transition-transform touch-manipulation overflow-hidden whitespace-nowrap"
+                className="glass rounded-xl py-2.5 px-1 text-xs font-semibold leading-none min-h-[44px] w-full flex items-center justify-center active:scale-95 transition-transform touch-manipulation whitespace-nowrap"
               >
                 {n >= 1000 ? `${n / 1000} L` : `${n} ml`}
               </button>
