@@ -229,6 +229,14 @@ function Dashboard() {
         </div>
       </GlassCard>
 
+      {/* Weekly Meal Plan link */}
+      <Link
+        to="/meal-plan"
+        className="block glass rounded-2xl p-4 text-center font-semibold text-sm active:scale-[0.98] transition-transform"
+      >
+        View Weekly Pakistani Meal Plan →
+      </Link>
+
       {/* Recommendations */}
       {recs.length > 0 && (
         <GlassCard>
