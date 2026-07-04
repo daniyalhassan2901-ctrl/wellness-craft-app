@@ -55,15 +55,21 @@ function Dashboard() {
   const water = today?.waterMl ?? 0;
   const goalDiff = profile.weightKg - profile.goalWeightKg;
 
+  const WATER_MAX_ML = 10000;
   const addWater = useCallback(async (delta: number) => {
     if (!user) return;
-    const next = Math.max(0, (today?.waterMl ?? 0) + delta);
+    const current = today?.waterMl ?? 0;
+    const raw = current + delta;
+    if (raw > WATER_MAX_ML) {
+      alert("Daily water intake is capped at 10 L for safety.");
+    }
+    const next = Math.max(0, Math.min(WATER_MAX_ML, raw));
+    if (next === current) return;
     setToday((prev) => (prev ? { ...prev, waterMl: next } : prev));
     try {
       await setWater(user.uid, todayKey(), next);
     } catch {
-      // revert on error
-      setToday((prev) => (prev ? { ...prev, waterMl: today?.waterMl ?? 0 } : prev));
+      setToday((prev) => (prev ? { ...prev, waterMl: current } : prev));
     }
   }, [user, today?.waterMl]);
 
