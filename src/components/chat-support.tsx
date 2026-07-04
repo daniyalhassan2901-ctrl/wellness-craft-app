@@ -78,14 +78,20 @@ export function ChatSupport() {
 
       {open && (
         <div
-          className="fixed inset-0 z-50 flex items-stretch sm:items-center justify-center bg-black/60 sm:p-4"
+          className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/60 sm:p-4"
           onClick={() => setOpen(false)}
         >
           <div
-            className="w-full sm:max-w-md bg-background border border-border sm:rounded-2xl shadow-xl flex flex-col"
-            style={{ height: "100dvh", maxHeight: "100dvh" }}
+            className="w-full sm:max-w-md bg-background border border-border rounded-t-2xl sm:rounded-2xl shadow-xl flex flex-col overflow-hidden"
+            style={{
+              height: "min(85dvh, 85vh)",
+              maxHeight: "85dvh",
+              marginBottom: kbOffset ? `${kbOffset}px` : undefined,
+              transition: "margin-bottom 150ms ease-out",
+            }}
             onClick={(e) => e.stopPropagation()}
           >
+
             <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0" style={{ paddingTop: "max(0.75rem, env(safe-area-inset-top))" }}>
               <div className="text-sm font-semibold flex items-center gap-2">
                 <MessageCircle className="h-4 w-4 text-primary" /> Fitness Assistant
