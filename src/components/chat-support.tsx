@@ -10,11 +10,39 @@ export function ChatSupport() {
     { role: "assistant", content: "Hi! Ask me about calories, protein, water, BMI, or weight loss." },
   ]);
   const [busy, setBusy] = useState(false);
+  const [kbOffset, setKbOffset] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
   }, [msgs, open]);
+
+  // Track mobile keyboard via visualViewport so input stays above it
+  useEffect(() => {
+    if (!open || typeof window === "undefined" || !window.visualViewport) return;
+    const vv = window.visualViewport;
+    const update = () => {
+      const offset = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+      setKbOffset(offset);
+    };
+    update();
+    vv.addEventListener("resize", update);
+    vv.addEventListener("scroll", update);
+    return () => {
+      vv.removeEventListener("resize", update);
+      vv.removeEventListener("scroll", update);
+      setKbOffset(0);
+    };
+  }, [open]);
+
+  // Lock body scroll while open
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, [open]);
+
 
   async function send() {
     const text = input.trim();
@@ -50,14 +78,20 @@ export function ChatSupport() {
 
       {open && (
         <div
-          className="fixed inset-0 z-50 flex items-stretch sm:items-center justify-center bg-black/60 sm:p-4"
+          className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/60 sm:p-4"
           onClick={() => setOpen(false)}
         >
           <div
-            className="w-full sm:max-w-md bg-background border border-border sm:rounded-2xl shadow-xl flex flex-col"
-            style={{ height: "100dvh", maxHeight: "100dvh" }}
+            className="w-full sm:max-w-md bg-background border border-border rounded-t-2xl sm:rounded-2xl shadow-xl flex flex-col overflow-hidden"
+            style={{
+              height: "min(85dvh, 85vh)",
+              maxHeight: "85dvh",
+              marginBottom: kbOffset ? `${kbOffset}px` : undefined,
+              transition: "margin-bottom 150ms ease-out",
+            }}
             onClick={(e) => e.stopPropagation()}
           >
+
             <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0" style={{ paddingTop: "max(0.75rem, env(safe-area-inset-top))" }}>
               <div className="text-sm font-semibold flex items-center gap-2">
                 <MessageCircle className="h-4 w-4 text-primary" /> Fitness Assistant
