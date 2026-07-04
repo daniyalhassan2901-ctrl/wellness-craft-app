@@ -30,6 +30,36 @@ export const FOODS: FoodItem[] = [
   { id: "pk-aloo-gosht", name: "Aloo Gosht", category: "Pakistani", calories: 380, protein: 22, carbs: 20, fat: 24, fiber: 3, servingSize: 1, servingUnit: "serving (250g)" },
   { id: "pk-palak-paneer", name: "Palak Paneer", category: "Pakistani", calories: 280, protein: 14, carbs: 12, fat: 20, fiber: 4, servingSize: 1, servingUnit: "bowl (200g)" },
   { id: "pk-lassi", name: "Sweet Lassi", category: "Pakistani", calories: 220, protein: 6, carbs: 32, fat: 8, fiber: 0, servingSize: 1, servingUnit: "glass (300ml)" },
+  { id: "pk-salted-lassi", name: "Salted Lassi", category: "Pakistani", calories: 110, protein: 5, carbs: 8, fat: 6, fiber: 0, servingSize: 1, servingUnit: "glass (300ml)" },
+  { id: "pk-doodh-patti", name: "Doodh Patti Chai", category: "Pakistani", calories: 180, protein: 6, carbs: 22, fat: 8, fiber: 0, servingSize: 1, servingUnit: "cup (240ml)" },
+  { id: "pk-kashmiri-chai", name: "Kashmiri (Pink) Chai", category: "Pakistani", calories: 150, protein: 4, carbs: 16, fat: 8, fiber: 0, servingSize: 1, servingUnit: "cup (240ml)" },
+
+  // === PAKISTANI BREAKFAST ===
+  { id: "pk-white-bread", name: "White Bread Slice", category: "Pakistani Breakfast", calories: 75, protein: 2.5, carbs: 14, fat: 1, fiber: 0.6, servingSize: 1, servingUnit: "slice (28g)" },
+  { id: "pk-brown-bread", name: "Brown Bread Slice", category: "Pakistani Breakfast", calories: 70, protein: 3, carbs: 12, fat: 1, fiber: 2, servingSize: 1, servingUnit: "slice (28g)" },
+  { id: "pk-butter", name: "Butter", category: "Pakistani Breakfast", calories: 102, protein: 0.1, carbs: 0, fat: 11.5, fiber: 0, servingSize: 1, servingUnit: "tbsp (14g)" },
+  { id: "pk-desi-butter", name: "Desi Butter (Makhan)", category: "Pakistani Breakfast", calories: 90, protein: 0.2, carbs: 0.1, fat: 10, fiber: 0, servingSize: 1, servingUnit: "tbsp (13g)" },
+  { id: "pk-desi-ghee", name: "Desi Ghee", category: "Pakistani Breakfast", calories: 120, protein: 0, carbs: 0, fat: 14, fiber: 0, servingSize: 1, servingUnit: "tbsp (14g)" },
+  { id: "pk-aloo-paratha", name: "Aloo Paratha", category: "Pakistani Breakfast", calories: 330, protein: 7, carbs: 42, fat: 15, fiber: 4, servingSize: 1, servingUnit: "piece (120g)" },
+  { id: "pk-anda-paratha", name: "Anda Paratha", category: "Pakistani Breakfast", calories: 400, protein: 13, carbs: 36, fat: 22, fiber: 3, servingSize: 1, servingUnit: "piece (140g)" },
+  { id: "pk-anda-fried", name: "Fried Egg (Anda)", category: "Pakistani Breakfast", calories: 90, protein: 6, carbs: 0.4, fat: 7, fiber: 0, servingSize: 1, servingUnit: "egg" },
+  { id: "pk-anda-boiled", name: "Boiled Egg (Anda)", category: "Pakistani Breakfast", calories: 78, protein: 6.3, carbs: 0.6, fat: 5.3, fiber: 0, servingSize: 1, servingUnit: "egg" },
+  { id: "pk-anda-omelette", name: "Anda Omelette (2 eggs)", category: "Pakistani Breakfast", calories: 220, protein: 13, carbs: 2, fat: 17, fiber: 0, servingSize: 1, servingUnit: "omelette" },
+  { id: "pk-halwa-puri", name: "Halwa Puri (Full Plate)", category: "Pakistani Breakfast", calories: 750, protein: 12, carbs: 90, fat: 38, fiber: 5, servingSize: 1, servingUnit: "plate" },
+  { id: "pk-puri", name: "Puri", category: "Pakistani Breakfast", calories: 100, protein: 2, carbs: 12, fat: 5, fiber: 0.5, servingSize: 1, servingUnit: "piece (30g)" },
+  { id: "pk-chana-chaat", name: "Chana Chaat", category: "Pakistani Breakfast", calories: 240, protein: 10, carbs: 34, fat: 7, fiber: 8, servingSize: 1, servingUnit: "bowl (200g)" },
+  { id: "pk-nashta-combo", name: "Paratha + Anda + Chai Combo", category: "Pakistani Breakfast", calories: 610, protein: 14, carbs: 58, fat: 34, fiber: 3, servingSize: 1, servingUnit: "combo" },
+
+  // === PAKISTANI FAST FOOD ===
+  { id: "pk-zinger-burger", name: "Zinger Burger", category: "Pakistani Fast Food", calories: 480, protein: 25, carbs: 44, fat: 22, fiber: 2, servingSize: 1, servingUnit: "burger" },
+  { id: "pk-zinger-roll", name: "Zinger Roll", category: "Pakistani Fast Food", calories: 420, protein: 18, carbs: 40, fat: 20, fiber: 2, servingSize: 1, servingUnit: "roll" },
+  { id: "pk-chicken-shawarma", name: "Chicken Shawarma", category: "Pakistani Fast Food", calories: 500, protein: 28, carbs: 45, fat: 22, fiber: 3, servingSize: 1, servingUnit: "wrap" },
+  { id: "pk-chicken-roll", name: "Chicken Paratha Roll", category: "Pakistani Fast Food", calories: 450, protein: 20, carbs: 40, fat: 22, fiber: 2, servingSize: 1, servingUnit: "roll" },
+  { id: "pk-bun-kabab", name: "Bun Kabab", category: "Pakistani Fast Food", calories: 320, protein: 12, carbs: 34, fat: 15, fiber: 3, servingSize: 1, servingUnit: "bun" },
+  { id: "pk-chicken-roast", name: "Chicken Roast (Quarter)", category: "Pakistani Fast Food", calories: 380, protein: 34, carbs: 4, fat: 26, fiber: 0, servingSize: 1, servingUnit: "quarter" },
+  { id: "pk-broast-piece", name: "Chicken Broast Piece", category: "Pakistani Fast Food", calories: 340, protein: 22, carbs: 12, fat: 22, fiber: 1, servingSize: 1, servingUnit: "piece" },
+  { id: "pk-club-sandwich", name: "Club Sandwich (Pakistani)", category: "Pakistani Fast Food", calories: 550, protein: 26, carbs: 46, fat: 28, fiber: 3, servingSize: 1, servingUnit: "sandwich" },
+  { id: "pk-fries-reg", name: "French Fries (Regular)", category: "Pakistani Fast Food", calories: 320, protein: 4, carbs: 42, fat: 15, fiber: 4, servingSize: 1, servingUnit: "regular" },
 
   // === INDIAN ===
   { id: "in-butter-chicken", name: "Butter Chicken", category: "Indian", calories: 490, protein: 30, carbs: 14, fat: 35, fiber: 2, servingSize: 1, servingUnit: "serving (250g)" },
