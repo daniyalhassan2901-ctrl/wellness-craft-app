@@ -10,11 +10,39 @@ export function ChatSupport() {
     { role: "assistant", content: "Hi! Ask me about calories, protein, water, BMI, or weight loss." },
   ]);
   const [busy, setBusy] = useState(false);
+  const [kbOffset, setKbOffset] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
   }, [msgs, open]);
+
+  // Track mobile keyboard via visualViewport so input stays above it
+  useEffect(() => {
+    if (!open || typeof window === "undefined" || !window.visualViewport) return;
+    const vv = window.visualViewport;
+    const update = () => {
+      const offset = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+      setKbOffset(offset);
+    };
+    update();
+    vv.addEventListener("resize", update);
+    vv.addEventListener("scroll", update);
+    return () => {
+      vv.removeEventListener("resize", update);
+      vv.removeEventListener("scroll", update);
+      setKbOffset(0);
+    };
+  }, [open]);
+
+  // Lock body scroll while open
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, [open]);
+
 
   async function send() {
     const text = input.trim();
