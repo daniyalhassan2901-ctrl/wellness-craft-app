@@ -49,21 +49,25 @@ export function ChatSupport() {
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 p-0 sm:p-4" onClick={() => setOpen(false)}>
+        <div
+          className="fixed inset-0 z-50 flex items-stretch sm:items-center justify-center bg-black/60 sm:p-4"
+          onClick={() => setOpen(false)}
+        >
           <div
-            className="w-full sm:max-w-md bg-background border border-border rounded-t-2xl sm:rounded-2xl shadow-xl flex flex-col h-[80vh] sm:h-[70vh]"
+            className="w-full sm:max-w-md bg-background border border-border sm:rounded-2xl shadow-xl flex flex-col"
+            style={{ height: "100dvh", maxHeight: "100dvh" }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0" style={{ paddingTop: "max(0.75rem, env(safe-area-inset-top))" }}>
               <div className="text-sm font-semibold flex items-center gap-2">
                 <MessageCircle className="h-4 w-4 text-primary" /> Fitness Assistant
               </div>
-              <button onClick={() => setOpen(false)} aria-label="Close" className="p-1 rounded-full hover:bg-muted">
+              <button onClick={() => setOpen(false)} aria-label="Close" className="p-2 rounded-full hover:bg-muted">
                 <X className="h-4 w-4" />
               </button>
             </div>
 
-            <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 py-3 space-y-2">
+            <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto px-3 py-3 space-y-2">
               {msgs.map((m, i) => (
                 <div
                   key={i}
@@ -79,18 +83,22 @@ export function ChatSupport() {
               {busy && <div className="mr-auto bg-muted rounded-2xl px-3 py-2 text-sm opacity-70">…</div>}
             </div>
 
-            <div className="p-2 border-t border-border flex items-center gap-2">
+            <div
+              className="p-2 border-t border-border flex items-center gap-2 shrink-0 bg-background"
+              style={{ paddingBottom: "max(0.5rem, env(safe-area-inset-bottom))" }}
+            >
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
+                onFocus={() => setTimeout(() => scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight }), 200)}
                 onKeyDown={(e) => e.key === "Enter" && send()}
                 placeholder="Ask about calories, protein…"
-                className="flex-1 rounded-full bg-input/60 border border-border px-4 py-2 text-sm outline-none focus:border-primary"
+                className="flex-1 min-w-0 rounded-full bg-input/60 border border-border px-4 py-2 text-sm outline-none focus:border-primary"
               />
               <button
                 onClick={send}
                 disabled={busy || !input.trim()}
-                className="rounded-full gradient-hero text-primary-foreground p-2 disabled:opacity-50"
+                className="rounded-full gradient-hero text-primary-foreground p-2 disabled:opacity-50 shrink-0"
                 aria-label="Send"
               >
                 <Send className="h-4 w-4" />

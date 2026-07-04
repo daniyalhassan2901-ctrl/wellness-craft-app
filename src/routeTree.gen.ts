@@ -16,6 +16,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AppWeightRouteImport } from './routes/_app.weight'
 import { Route as AppProfileRouteImport } from './routes/_app.profile'
+import { Route as AppMealPlanRouteImport } from './routes/_app.meal-plan'
 import { Route as AppFoodRouteImport } from './routes/_app.food'
 import { Route as AppDiaryRouteImport } from './routes/_app.diary'
 import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
@@ -55,6 +56,11 @@ const AppProfileRoute = AppProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AppRoute,
 } as any)
+const AppMealPlanRoute = AppMealPlanRouteImport.update({
+  id: '/meal-plan',
+  path: '/meal-plan',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppFoodRoute = AppFoodRouteImport.update({
   id: '/food',
   path: '/food',
@@ -84,6 +90,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AppDashboardRoute
   '/diary': typeof AppDiaryRoute
   '/food': typeof AppFoodRoute
+  '/meal-plan': typeof AppMealPlanRoute
   '/profile': typeof AppProfileRoute
   '/weight': typeof AppWeightRoute
   '/api/chat': typeof ApiChatRoute
@@ -96,6 +103,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AppDashboardRoute
   '/diary': typeof AppDiaryRoute
   '/food': typeof AppFoodRoute
+  '/meal-plan': typeof AppMealPlanRoute
   '/profile': typeof AppProfileRoute
   '/weight': typeof AppWeightRoute
   '/api/chat': typeof ApiChatRoute
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/diary': typeof AppDiaryRoute
   '/_app/food': typeof AppFoodRoute
+  '/_app/meal-plan': typeof AppMealPlanRoute
   '/_app/profile': typeof AppProfileRoute
   '/_app/weight': typeof AppWeightRoute
   '/api/chat': typeof ApiChatRoute
@@ -124,6 +133,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/diary'
     | '/food'
+    | '/meal-plan'
     | '/profile'
     | '/weight'
     | '/api/chat'
@@ -136,6 +146,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/diary'
     | '/food'
+    | '/meal-plan'
     | '/profile'
     | '/weight'
     | '/api/chat'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/_app/dashboard'
     | '/_app/diary'
     | '/_app/food'
+    | '/_app/meal-plan'
     | '/_app/profile'
     | '/_app/weight'
     | '/api/chat'
@@ -213,6 +225,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProfileRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/meal-plan': {
+      id: '/_app/meal-plan'
+      path: '/meal-plan'
+      fullPath: '/meal-plan'
+      preLoaderRoute: typeof AppMealPlanRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/food': {
       id: '/_app/food'
       path: '/food'
@@ -249,6 +268,7 @@ interface AppRouteChildren {
   AppDashboardRoute: typeof AppDashboardRoute
   AppDiaryRoute: typeof AppDiaryRoute
   AppFoodRoute: typeof AppFoodRoute
+  AppMealPlanRoute: typeof AppMealPlanRoute
   AppProfileRoute: typeof AppProfileRoute
   AppWeightRoute: typeof AppWeightRoute
 }
@@ -258,6 +278,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppDashboardRoute: AppDashboardRoute,
   AppDiaryRoute: AppDiaryRoute,
   AppFoodRoute: AppFoodRoute,
+  AppMealPlanRoute: AppMealPlanRoute,
   AppProfileRoute: AppProfileRoute,
   AppWeightRoute: AppWeightRoute,
 }
