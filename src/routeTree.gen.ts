@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AppRouteImport } from './routes/_app'
+import { Route as AdminRouteImport } from './routes/_admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AppWeightRouteImport } from './routes/_app.weight'
@@ -21,6 +22,11 @@ import { Route as AppFoodRouteImport } from './routes/_app.food'
 import { Route as AppDiaryRouteImport } from './routes/_app.diary'
 import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
 import { Route as AppAnalyticsRouteImport } from './routes/_app.analytics'
+import { Route as AdminAdminRouteImport } from './routes/_admin.admin'
+import { Route as AdminAdminUsersRouteImport } from './routes/_admin.admin.users'
+import { Route as AdminAdminFoodsRouteImport } from './routes/_admin.admin.foods'
+import { Route as AdminAdminAnalyticsRouteImport } from './routes/_admin.admin.analytics'
+import { Route as AdminAdminUsersUidRouteImport } from './routes/_admin.admin.users.$uid'
 
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
@@ -34,6 +40,10 @@ const AuthRoute = AuthRouteImport.update({
 } as any)
 const AppRoute = AppRouteImport.update({
   id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/_admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -81,11 +91,37 @@ const AppAnalyticsRoute = AppAnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => AppRoute,
 } as any)
+const AdminAdminRoute = AdminAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminUsersRoute = AdminAdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminAdminRoute,
+} as any)
+const AdminAdminFoodsRoute = AdminAdminFoodsRouteImport.update({
+  id: '/foods',
+  path: '/foods',
+  getParentRoute: () => AdminAdminRoute,
+} as any)
+const AdminAdminAnalyticsRoute = AdminAdminAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => AdminAdminRoute,
+} as any)
+const AdminAdminUsersUidRoute = AdminAdminUsersUidRouteImport.update({
+  id: '/$uid',
+  path: '/$uid',
+  getParentRoute: () => AdminAdminUsersRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/onboarding': typeof OnboardingRoute
+  '/admin': typeof AdminAdminRouteWithChildren
   '/analytics': typeof AppAnalyticsRoute
   '/dashboard': typeof AppDashboardRoute
   '/diary': typeof AppDiaryRoute
@@ -94,11 +130,16 @@ export interface FileRoutesByFullPath {
   '/profile': typeof AppProfileRoute
   '/weight': typeof AppWeightRoute
   '/api/chat': typeof ApiChatRoute
+  '/admin/analytics': typeof AdminAdminAnalyticsRoute
+  '/admin/foods': typeof AdminAdminFoodsRoute
+  '/admin/users': typeof AdminAdminUsersRouteWithChildren
+  '/admin/users/$uid': typeof AdminAdminUsersUidRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/onboarding': typeof OnboardingRoute
+  '/admin': typeof AdminAdminRouteWithChildren
   '/analytics': typeof AppAnalyticsRoute
   '/dashboard': typeof AppDashboardRoute
   '/diary': typeof AppDiaryRoute
@@ -107,13 +148,19 @@ export interface FileRoutesByTo {
   '/profile': typeof AppProfileRoute
   '/weight': typeof AppWeightRoute
   '/api/chat': typeof ApiChatRoute
+  '/admin/analytics': typeof AdminAdminAnalyticsRoute
+  '/admin/foods': typeof AdminAdminFoodsRoute
+  '/admin/users': typeof AdminAdminUsersRouteWithChildren
+  '/admin/users/$uid': typeof AdminAdminUsersUidRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_admin': typeof AdminRouteWithChildren
   '/_app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
   '/onboarding': typeof OnboardingRoute
+  '/_admin/admin': typeof AdminAdminRouteWithChildren
   '/_app/analytics': typeof AppAnalyticsRoute
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/diary': typeof AppDiaryRoute
@@ -122,6 +169,10 @@ export interface FileRoutesById {
   '/_app/profile': typeof AppProfileRoute
   '/_app/weight': typeof AppWeightRoute
   '/api/chat': typeof ApiChatRoute
+  '/_admin/admin/analytics': typeof AdminAdminAnalyticsRoute
+  '/_admin/admin/foods': typeof AdminAdminFoodsRoute
+  '/_admin/admin/users': typeof AdminAdminUsersRouteWithChildren
+  '/_admin/admin/users/$uid': typeof AdminAdminUsersUidRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -129,6 +180,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/onboarding'
+    | '/admin'
     | '/analytics'
     | '/dashboard'
     | '/diary'
@@ -137,11 +189,16 @@ export interface FileRouteTypes {
     | '/profile'
     | '/weight'
     | '/api/chat'
+    | '/admin/analytics'
+    | '/admin/foods'
+    | '/admin/users'
+    | '/admin/users/$uid'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/onboarding'
+    | '/admin'
     | '/analytics'
     | '/dashboard'
     | '/diary'
@@ -150,12 +207,18 @@ export interface FileRouteTypes {
     | '/profile'
     | '/weight'
     | '/api/chat'
+    | '/admin/analytics'
+    | '/admin/foods'
+    | '/admin/users'
+    | '/admin/users/$uid'
   id:
     | '__root__'
     | '/'
+    | '/_admin'
     | '/_app'
     | '/auth'
     | '/onboarding'
+    | '/_admin/admin'
     | '/_app/analytics'
     | '/_app/dashboard'
     | '/_app/diary'
@@ -164,10 +227,15 @@ export interface FileRouteTypes {
     | '/_app/profile'
     | '/_app/weight'
     | '/api/chat'
+    | '/_admin/admin/analytics'
+    | '/_admin/admin/foods'
+    | '/_admin/admin/users'
+    | '/_admin/admin/users/$uid'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRoute
   OnboardingRoute: typeof OnboardingRoute
@@ -195,6 +263,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_admin': {
+      id: '/_admin'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -260,8 +335,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAnalyticsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_admin/admin': {
+      id: '/_admin/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminAdminRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/admin/users': {
+      id: '/_admin/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminAdminUsersRouteImport
+      parentRoute: typeof AdminAdminRoute
+    }
+    '/_admin/admin/foods': {
+      id: '/_admin/admin/foods'
+      path: '/foods'
+      fullPath: '/admin/foods'
+      preLoaderRoute: typeof AdminAdminFoodsRouteImport
+      parentRoute: typeof AdminAdminRoute
+    }
+    '/_admin/admin/analytics': {
+      id: '/_admin/admin/analytics'
+      path: '/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AdminAdminAnalyticsRouteImport
+      parentRoute: typeof AdminAdminRoute
+    }
+    '/_admin/admin/users/$uid': {
+      id: '/_admin/admin/users/$uid'
+      path: '/$uid'
+      fullPath: '/admin/users/$uid'
+      preLoaderRoute: typeof AdminAdminUsersUidRouteImport
+      parentRoute: typeof AdminAdminUsersRoute
+    }
   }
 }
+
+interface AdminAdminUsersRouteChildren {
+  AdminAdminUsersUidRoute: typeof AdminAdminUsersUidRoute
+}
+
+const AdminAdminUsersRouteChildren: AdminAdminUsersRouteChildren = {
+  AdminAdminUsersUidRoute: AdminAdminUsersUidRoute,
+}
+
+const AdminAdminUsersRouteWithChildren = AdminAdminUsersRoute._addFileChildren(
+  AdminAdminUsersRouteChildren,
+)
+
+interface AdminAdminRouteChildren {
+  AdminAdminAnalyticsRoute: typeof AdminAdminAnalyticsRoute
+  AdminAdminFoodsRoute: typeof AdminAdminFoodsRoute
+  AdminAdminUsersRoute: typeof AdminAdminUsersRouteWithChildren
+}
+
+const AdminAdminRouteChildren: AdminAdminRouteChildren = {
+  AdminAdminAnalyticsRoute: AdminAdminAnalyticsRoute,
+  AdminAdminFoodsRoute: AdminAdminFoodsRoute,
+  AdminAdminUsersRoute: AdminAdminUsersRouteWithChildren,
+}
+
+const AdminAdminRouteWithChildren = AdminAdminRoute._addFileChildren(
+  AdminAdminRouteChildren,
+)
+
+interface AdminRouteChildren {
+  AdminAdminRoute: typeof AdminAdminRouteWithChildren
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminAdminRoute: AdminAdminRouteWithChildren,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface AppRouteChildren {
   AppAnalyticsRoute: typeof AppAnalyticsRoute
@@ -287,6 +435,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRoute,
   OnboardingRoute: OnboardingRoute,

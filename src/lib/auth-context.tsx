@@ -13,11 +13,14 @@ import {
 } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { getFirebase, isFirebaseConfigured } from "./firebase";
+import { checkIsAdmin, type AdminRecord } from "./admin";
 import type { UserProfile } from "./types";
 
 interface AuthCtx {
   user: User | null;
   profile: UserProfile | null;
+  admin: AdminRecord | null;
+  isAdmin: boolean;
   loading: boolean;
   configured: boolean;
   signIn: (email: string, password: string) => Promise<void>;
@@ -33,6 +36,7 @@ const Ctx = createContext<AuthCtx | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [admin, setAdmin] = useState<AdminRecord | null>(null);
   const [loading, setLoading] = useState(true);
 
   const loadProfile = async (u: User) => {
@@ -51,8 +55,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setPersistence(auth, browserLocalPersistence).catch(() => {});
     const unsub = onAuthStateChanged(auth, async (u) => {
       setUser(u);
-      if (u) await loadProfile(u);
-      else setProfile(null);
+      if (u) {
+        const [_, adminRec] = await Promise.all([loadProfile(u), checkIsAdmin(u.uid)]);
+        setAdmin(adminRec);
+      } else {
+        setProfile(null);
+        setAdmin(null);
+      }
       setLoading(false);
     });
     return () => unsub();
@@ -97,6 +106,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         user,
         profile,
+        admin,
+        isAdmin: !!admin,
         loading,
         configured: isFirebaseConfigured,
         signIn,

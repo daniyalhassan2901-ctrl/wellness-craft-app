@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { FOODS, FOOD_CATEGORIES } from "@/data/foods";
+import { useAllFoods } from "@/hooks/use-custom-foods";
 import type { FoodItem, LoggedFood, MealType } from "@/lib/types";
 import { addFoodToLog, getDailyLog, listFavorites, listRecent, removeFoodFromLog, toggleFavorite, todayKey } from "@/lib/firestore";
 import { GlassCard } from "@/components/glass-card";
@@ -128,6 +128,8 @@ function FoodPickerModal({
   const [recent, setRecent] = useState<string[]>([]);
   const [quickCal, setQuickCal] = useState("");
 
+  const { foods: ALL_FOODS, categories: ALL_CATEGORIES } = useAllFoods();
+
   useEffect(() => {
     if (!user) return;
     listFavorites(user.uid).then((f) => setFavs(new Set(f.map((x) => x.foodId))));
@@ -135,7 +137,7 @@ function FoodPickerModal({
   }, [user]);
 
   const filtered = useMemo(() => {
-    let list = FOODS;
+    let list = ALL_FOODS;
     if (tab === "fav") list = list.filter((f) => favs.has(f.id));
     if (tab === "recent") list = list.filter((f) => recent.includes(f.id));
     if (cat !== "all") list = list.filter((f) => f.category === cat);
@@ -144,7 +146,7 @@ function FoodPickerModal({
       list = list.filter((f) => f.name.toLowerCase().includes(s));
     }
     return list.slice(0, 100);
-  }, [q, cat, tab, favs, recent]);
+  }, [q, cat, tab, favs, recent, ALL_FOODS]);
 
   const [picked, setPicked] = useState<FoodItem | null>(null);
   const [servings, setServings] = useState(1);
@@ -275,7 +277,7 @@ function FoodPickerModal({
                   </div>
                   <div className="flex gap-1 overflow-x-auto pb-1 -mx-1 px-1">
                     <CatChip active={cat === "all"} onClick={() => setCat("all")} label="All" />
-                    {FOOD_CATEGORIES.map((c) => (
+                    {ALL_CATEGORIES.map((c) => (
                       <CatChip key={c} active={cat === c} onClick={() => setCat(c)} label={c} />
                     ))}
                   </div>
