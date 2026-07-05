@@ -14,7 +14,7 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthPage() {
-  const { user, profile, loading, configured, signIn, signUp, signInGoogle, resetPassword } = useAuth();
+  const { user, profile, isAdmin, loading, configured, signIn, signUp, signInGoogle, resetPassword } = useAuth();
   const navigate = useNavigate();
   const [mode, setMode] = useState<"signin" | "signup" | "reset">("signin");
   const [email, setEmail] = useState("");
@@ -25,9 +25,10 @@ function AuthPage() {
 
   useEffect(() => {
     if (loading) return;
-    if (user && profile) navigate({ to: "/dashboard", replace: true });
+    if (user && isAdmin) navigate({ to: "/admin", replace: true });
+    else if (user && profile) navigate({ to: "/dashboard", replace: true });
     else if (user && !profile) navigate({ to: "/onboarding", replace: true });
-  }, [user, profile, loading, navigate]);
+  }, [user, profile, isAdmin, loading, navigate]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();

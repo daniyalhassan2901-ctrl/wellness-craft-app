@@ -18,14 +18,15 @@ export const Route = createFileRoute("/")({
 });
 
 function Landing() {
-  const { user, profile, loading } = useAuth();
+  const { user, profile, isAdmin, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (loading) return;
-    if (user && profile) navigate({ to: "/dashboard", replace: true });
+    if (user && isAdmin) navigate({ to: "/admin", replace: true });
+    else if (user && profile) navigate({ to: "/dashboard", replace: true });
     else if (user && !profile) navigate({ to: "/onboarding", replace: true });
-  }, [user, profile, loading, navigate]);
+  }, [user, profile, isAdmin, loading, navigate]);
 
   return (
     <div className="min-h-screen flex flex-col">
