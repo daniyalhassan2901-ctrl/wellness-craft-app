@@ -16,6 +16,8 @@ export interface UserProfile {
   streak?: number;
   lastLogDate?: string;
   dailyCalorieTarget?: number;
+  banned?: boolean;
+  disabled?: boolean;
 }
 
 export interface FoodItem {
