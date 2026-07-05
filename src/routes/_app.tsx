@@ -9,16 +9,29 @@ export const Route = createFileRoute("/_app")({
 });
 
 function AppLayout() {
-  const { user, profile, loading } = useAuth();
+  const { user, profile, isAdmin, signOut, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (loading) return;
-    if (!user) navigate({ to: "/auth", replace: true });
-    else if (!profile) navigate({ to: "/onboarding", replace: true });
-  }, [user, profile, loading, navigate]);
+    if (!user) {
+      navigate({ to: "/auth", replace: true });
+      return;
+    }
+    if (isAdmin) {
+      navigate({ to: "/admin", replace: true });
+      return;
+    }
+    // Enforce ban / disabled flags
+    const anyProfile = profile as (typeof profile & { banned?: boolean; disabled?: boolean }) | null;
+    if (anyProfile?.banned || anyProfile?.disabled) {
+      signOut().finally(() => navigate({ to: "/auth", replace: true }));
+      return;
+    }
+    if (!profile) navigate({ to: "/onboarding", replace: true });
+  }, [user, profile, isAdmin, loading, navigate, signOut]);
 
-  if (loading || !user || !profile) {
+  if (loading || !user || !profile || isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-6 w-6 animate-spin text-primary" />
