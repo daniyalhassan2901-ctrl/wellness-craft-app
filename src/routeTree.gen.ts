@@ -23,6 +23,7 @@ import { Route as AppDiaryRouteImport } from './routes/_app.diary'
 import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
 import { Route as AppAnalyticsRouteImport } from './routes/_app.analytics'
 import { Route as AdminAdminRouteImport } from './routes/_admin.admin'
+import { Route as AdminAdminIndexRouteImport } from './routes/_admin.admin.index'
 import { Route as AdminAdminUsersRouteImport } from './routes/_admin.admin.users'
 import { Route as AdminAdminFoodsRouteImport } from './routes/_admin.admin.foods'
 import { Route as AdminAdminAnalyticsRouteImport } from './routes/_admin.admin.analytics'
@@ -96,6 +97,11 @@ const AdminAdminRoute = AdminAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAdminIndexRoute = AdminAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminAdminRoute,
+} as any)
 const AdminAdminUsersRoute = AdminAdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -133,13 +139,13 @@ export interface FileRoutesByFullPath {
   '/admin/analytics': typeof AdminAdminAnalyticsRoute
   '/admin/foods': typeof AdminAdminFoodsRoute
   '/admin/users': typeof AdminAdminUsersRouteWithChildren
+  '/admin/': typeof AdminAdminIndexRoute
   '/admin/users/$uid': typeof AdminAdminUsersUidRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/onboarding': typeof OnboardingRoute
-  '/admin': typeof AdminAdminRouteWithChildren
   '/analytics': typeof AppAnalyticsRoute
   '/dashboard': typeof AppDashboardRoute
   '/diary': typeof AppDiaryRoute
@@ -151,6 +157,7 @@ export interface FileRoutesByTo {
   '/admin/analytics': typeof AdminAdminAnalyticsRoute
   '/admin/foods': typeof AdminAdminFoodsRoute
   '/admin/users': typeof AdminAdminUsersRouteWithChildren
+  '/admin': typeof AdminAdminIndexRoute
   '/admin/users/$uid': typeof AdminAdminUsersUidRoute
 }
 export interface FileRoutesById {
@@ -172,6 +179,7 @@ export interface FileRoutesById {
   '/_admin/admin/analytics': typeof AdminAdminAnalyticsRoute
   '/_admin/admin/foods': typeof AdminAdminFoodsRoute
   '/_admin/admin/users': typeof AdminAdminUsersRouteWithChildren
+  '/_admin/admin/': typeof AdminAdminIndexRoute
   '/_admin/admin/users/$uid': typeof AdminAdminUsersUidRoute
 }
 export interface FileRouteTypes {
@@ -192,13 +200,13 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/foods'
     | '/admin/users'
+    | '/admin/'
     | '/admin/users/$uid'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/onboarding'
-    | '/admin'
     | '/analytics'
     | '/dashboard'
     | '/diary'
@@ -210,6 +218,7 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/foods'
     | '/admin/users'
+    | '/admin'
     | '/admin/users/$uid'
   id:
     | '__root__'
@@ -230,6 +239,7 @@ export interface FileRouteTypes {
     | '/_admin/admin/analytics'
     | '/_admin/admin/foods'
     | '/_admin/admin/users'
+    | '/_admin/admin/'
     | '/_admin/admin/users/$uid'
   fileRoutesById: FileRoutesById
 }
@@ -342,6 +352,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAdminRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_admin/admin/': {
+      id: '/_admin/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminAdminIndexRouteImport
+      parentRoute: typeof AdminAdminRoute
+    }
     '/_admin/admin/users': {
       id: '/_admin/admin/users'
       path: '/users'
@@ -389,12 +406,14 @@ interface AdminAdminRouteChildren {
   AdminAdminAnalyticsRoute: typeof AdminAdminAnalyticsRoute
   AdminAdminFoodsRoute: typeof AdminAdminFoodsRoute
   AdminAdminUsersRoute: typeof AdminAdminUsersRouteWithChildren
+  AdminAdminIndexRoute: typeof AdminAdminIndexRoute
 }
 
 const AdminAdminRouteChildren: AdminAdminRouteChildren = {
   AdminAdminAnalyticsRoute: AdminAdminAnalyticsRoute,
   AdminAdminFoodsRoute: AdminAdminFoodsRoute,
   AdminAdminUsersRoute: AdminAdminUsersRouteWithChildren,
+  AdminAdminIndexRoute: AdminAdminIndexRoute,
 }
 
 const AdminAdminRouteWithChildren = AdminAdminRoute._addFileChildren(

@@ -212,10 +212,18 @@ function UserDetail() {
 }
 
 function Stat({ label, value }: { label: string; value: React.ReactNode }) {
+  let safe: React.ReactNode = value;
+  if (typeof value === "number") {
+    safe = Number.isFinite(value) && Math.abs(value) < 1e15 ? value.toLocaleString() : "N/A";
+  } else if (typeof value === "string") {
+    safe = value.length > 24 ? value.slice(0, 24) + "…" : value;
+  } else if (value == null) {
+    safe = "N/A";
+  }
   return (
-    <div className="rounded-xl bg-muted/40 py-2">
-      <div className="text-[9px] uppercase text-muted-foreground tracking-wide">{label}</div>
-      <div className="text-sm font-semibold mt-0.5">{value}</div>
+    <div className="rounded-xl bg-muted/40 py-2 min-w-0">
+      <div className="text-[9px] uppercase text-muted-foreground tracking-wide truncate px-1">{label}</div>
+      <div className="text-sm font-semibold mt-0.5 truncate px-1">{safe}</div>
     </div>
   );
 }

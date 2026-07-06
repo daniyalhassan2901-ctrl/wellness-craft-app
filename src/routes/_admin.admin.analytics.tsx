@@ -100,11 +100,11 @@ function Analytics() {
       <div className="grid grid-cols-2 gap-3">
         <GlassCard>
           <div className="text-[10px] uppercase text-muted-foreground">Daily active users</div>
-          <div className="text-3xl font-bold mt-1">{data.dau}</div>
+          <div className="text-3xl font-bold mt-1 truncate">{Number.isFinite(data.dau) ? data.dau : "N/A"}</div>
         </GlassCard>
         <GlassCard>
           <div className="text-[10px] uppercase text-muted-foreground">Monthly active users</div>
-          <div className="text-3xl font-bold mt-1">{data.mau}</div>
+          <div className="text-3xl font-bold mt-1 truncate">{Number.isFinite(data.mau) ? data.mau : "N/A"}</div>
         </GlassCard>
       </div>
 
