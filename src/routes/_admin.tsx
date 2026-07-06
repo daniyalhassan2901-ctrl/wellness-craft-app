@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { Loader2, LayoutDashboard, Users, Utensils, BarChart3, LogOut, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ErrorBoundary } from "@/components/error-boundary";
 
 export const Route = createFileRoute("/_admin")({
   component: AdminLayout,
