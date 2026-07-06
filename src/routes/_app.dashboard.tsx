@@ -209,24 +209,54 @@ function Dashboard() {
       {/* Weekly bars */}
       <GlassCard>
         <div className="text-sm font-semibold mb-3">This week</div>
-        <div className="flex items-end justify-between gap-1.5 h-24">
-          {week.map((d) => {
-            const cal = d.foods.reduce((s, f) => s + f.calories, 0);
-            const pct = Math.min(100, (cal / stats.targets.calories) * 100);
-            const label = new Date(d.date).toLocaleDateString(undefined, { weekday: "narrow" });
-            return (
-              <div key={d.date} className="flex-1 flex flex-col items-center gap-1">
-                <div className="w-full flex-1 flex items-end">
-                  <div
-                    className="w-full rounded-t-md gradient-hero transition-all"
-                    style={{ height: `${Math.max(4, pct)}%` }}
-                  />
-                </div>
-                <span className="text-[10px] text-muted-foreground">{label}</span>
+        {(() => {
+          const target = Number.isFinite(stats.targets.calories) && stats.targets.calories > 0
+            ? stats.targets.calories
+            : 2000;
+          const days = (week ?? []).map((d) => {
+            const foods = Array.isArray(d?.foods) ? d.foods : [];
+            const cal = foods.reduce((s, f) => {
+              const c = Number(f?.calories);
+              return s + (Number.isFinite(c) ? c : 0);
+            }, 0);
+            let label = "";
+            try {
+              const dt = new Date(d.date);
+              if (!isNaN(dt.getTime())) {
+                label = dt.toLocaleDateString(undefined, { weekday: "narrow" });
+              }
+            } catch { /* ignore */ }
+            return { date: d.date, cal, label };
+          });
+          const hasAny = days.some((x) => x.cal > 0);
+          if (days.length === 0) {
+            return <div className="h-24 flex items-center justify-center text-xs text-muted-foreground">No data for this week</div>;
+          }
+          return (
+            <>
+              <div className="flex items-end justify-between gap-1.5 h-24">
+                {days.map((d, i) => {
+                  const raw = (d.cal / target) * 100;
+                  const pct = Number.isFinite(raw) ? Math.max(0, Math.min(100, raw)) : 0;
+                  return (
+                    <div key={d.date || i} className="flex-1 flex flex-col items-center gap-1 min-w-0">
+                      <div className="w-full flex-1 flex items-end">
+                        <div
+                          className="w-full rounded-t-md gradient-hero transition-all"
+                          style={{ height: `${Math.max(4, pct)}%`, minHeight: 4 }}
+                        />
+                      </div>
+                      <span className="text-[10px] text-muted-foreground">{d.label}</span>
+                    </div>
+                  );
+                })}
               </div>
-            );
-          })}
-        </div>
+              {!hasAny && (
+                <div className="mt-2 text-[10px] text-center text-muted-foreground">No data for this week</div>
+              )}
+            </>
+          );
+        })()}
       </GlassCard>
 
       {/* Weekly Meal Plan link */}

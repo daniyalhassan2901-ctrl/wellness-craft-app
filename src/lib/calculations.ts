@@ -10,14 +10,25 @@ const ACTIVITY_MULTIPLIER: Record<ActivityLevel, number> = {
   athlete: 1.9,
 };
 
+function num(v: unknown, fallback = 0): number {
+  const n = typeof v === "number" ? v : Number(v);
+  return Number.isFinite(n) ? n : fallback;
+}
+
 export function calcBMR(weightKg: number, heightCm: number, age: number, gender: Gender) {
-  // Mifflin-St Jeor
-  const base = 10 * weightKg + 6.25 * heightCm - 5 * age;
-  return Math.round(gender === "male" ? base + 5 : base - 161);
+  // Mifflin-St Jeor — sanitize inputs to avoid NaN propagation.
+  const w = num(weightKg, 70);
+  const h = num(heightCm, 170);
+  const a = num(age, 30);
+  const base = 10 * w + 6.25 * h - 5 * a;
+  const bmr = gender === "male" ? base + 5 : base - 161;
+  return Math.max(0, Math.round(Number.isFinite(bmr) ? bmr : 0));
 }
 
 export function calcTDEE(bmr: number, level: ActivityLevel) {
-  return Math.round(bmr * ACTIVITY_MULTIPLIER[level]);
+  const mult = ACTIVITY_MULTIPLIER[level] ?? 1.2;
+  const tdee = num(bmr, 0) * mult;
+  return Math.max(0, Math.round(Number.isFinite(tdee) ? tdee : 0));
 }
 
 export function calcTargets(tdee: number, goal: FitnessGoal) {
