@@ -95,7 +95,9 @@ function AdminLayout() {
         </div>
       </header>
       <main className="mx-auto max-w-5xl px-4 py-5">
-        <Outlet />
+        <ErrorBoundary label="Admin panel error">
+          <Outlet />
+        </ErrorBoundary>
       </main>
     </div>
   );
