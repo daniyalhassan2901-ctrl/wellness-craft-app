@@ -3,7 +3,9 @@ import { useEffect, useMemo, useState } from "react";
 import { GlassCard } from "@/components/glass-card";
 import { listAllUsers } from "@/lib/admin";
 import type { UserProfile } from "@/lib/types";
-import { Search, Loader2, ShieldOff, Ban } from "lucide-react";
+import { Search, Loader2, ShieldOff, Ban, ChevronLeft, ChevronRight } from "lucide-react";
+
+const PAGE_SIZE = 50;
 
 export const Route = createFileRoute("/_admin/admin/users")({
   head: () => ({ meta: [{ title: "Users · Admin" }] }),
